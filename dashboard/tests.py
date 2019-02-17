@@ -2,6 +2,7 @@ from django.urls import resolve
 from django.test import TestCase
 from dashboard.views import dashboard
 from django.http import HttpRequest
+from django.template.loader import render_to_string
 
 class SmokeTest(TestCase):
 
@@ -11,9 +12,8 @@ class SmokeTest(TestCase):
 
 
 	def test_dashboard_returns_correct_html(self):
-		request = HttpRequest()
-		response = dashboard(request)
-		html = response.content.decode('utf8')
-		self.assertTrue(html.startswith('<html>'))
-		self.assertIn('<title>Leawood</title>', html)
-		self.assertTrue(html.endswith('</html>'))
+		response = self.client.get('/')
+		# html = response.content.decode('utf8')
+		# expected_html = render_to_string('dashboard/dashboard.html')
+		# self.assertEqual(html, expected_html)
+		self.assertTemplateUsed(response, 'dashboard/dashboard.html')
