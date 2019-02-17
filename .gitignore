@@ -5,5 +5,5 @@ __pycache__
 *.sublime-workspace
 *.sublime-project
 
-geckodriver.log
+geckodriver.*
 virtualenv
