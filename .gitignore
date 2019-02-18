@@ -7,3 +7,6 @@ __pycache__
 
 geckodriver.*
 virtualenv
+
+/static
+.env
