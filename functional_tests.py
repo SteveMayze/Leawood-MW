@@ -45,10 +45,10 @@ class newVisitorTest(unittest.TestCase):
 		searchbox.send_keys(Keys.ENTER)
 		time.sleep(1)
 
-		device_table self.browser.find_element_by_id('id_device_table')
+		device_table = self.browser.find_element_by_id('id_device_table')
 		rows = device_table.find_elements_by_tag_name('tr')
 		self.assertTrue(
-			all('solar' in row.text)
+			all('solar' in row.text.lower() for row in rows)
 		)
 
 
