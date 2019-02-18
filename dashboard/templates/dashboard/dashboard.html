@@ -1,16 +1,58 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<title>Leawood</title>
-</head>
-<body>
-	<h1>Dashboard</h1>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content=" IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Leawood</title>
+		<link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="/static/base.css">
+	</head>
+	<body>
+		<div class="container">
+			<row>
+				<div class="col-md-1 offset-md-11 text-right">
+					<div class="nvabar navbar-default" role="navigation">
+						<a href="#">Sign in</a>			
+					</div>
+				</div>
+			</row>
+		</div>
+		<div class="conatiner">
+			<div class="row">
+				<div class="col-md-10 offset-md-1 jumbotron text-center">
+					<h1>Dashboard</h1>
+				</div>
+			</div>
 
-	<input type="text" id="id_search_filter" placeholder="device filter" />
+			<div class="row">
+				<div class="col-md-10 offset-md-1">
+					<input type="text" id="id_search_filter" placeholder="device filter" />
+				</div>
+			</div>
 
-	<table id="id_device_table">
-		<tr><td>Solar Cell Charger</td></tr>
-	</table>
+			<div class="row">
+				<div class="col-md-10 offset-md-1 text-left">
+					<h2>Devices</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-10 offset-md-1">
+					<table id="id_device_table">
+						<tr><td>Solar Cell Charger</td></tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	    <script src="/static/jquery-3.3.1.min.js"></script>
+    	<script src="/static/dasjboard.js"></script>
 
-</body>
+	</body>
+    <!-- script>
+		$(document).ready(function () {
+		  window.Dashboard.initialize();
+		});    
+	</script -->	
+
+
 </html>

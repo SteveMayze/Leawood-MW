@@ -23,6 +23,10 @@ class newVisitorTest(unittest.TestCase):
 		# He sees the main menu bar. Since he is not signed in, there is only
 		# the dashboard tab and an option to sign in at the top.
 		# TODO
+		signin_link = self.browser.find_element_by_link_text('Sign in')
+		self.assertTrue(signin_link)
+
+		self.assertEqual('Sign in', signin_link.text)
 
 		# He also sees only the Dashboard that is in a view only mode.
 		header_text = self.browser.find_element_by_tag_name('h1').text
@@ -55,6 +59,7 @@ class newVisitorTest(unittest.TestCase):
 
 		# Graeme signs on and sees that the menu has expanded to be able 
 		# to manage the devices
+		# signin_link.click()
 
 		# He goes to the Devices tab.
 
