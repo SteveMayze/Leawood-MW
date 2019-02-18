@@ -61,7 +61,22 @@ class newVisitorTest(LiveServerTestCase):
 
 		# Graeme signs on and sees that the menu has expanded to be able 
 		# to manage the devices
-		# signin_link.click()
+
+		# First, he has to sign in. He clicks on the sign in link and
+		# a Modal dialog appears asking for his credentials.
+		signin_link.click()
+		time.sleep(1)
+		user_name = self.browser.find_element_by_id('id_user_name')
+		self.assertEqual(user_name.get_attribute('placeholder'), 'Enter your user ID')
+
+
+
+		user_name.send_keys('graeme')
+		password = self.browser.find_element_by_id('id_password')
+		self.assertEqual(password.get_attribute('placeholder'), 'Enter your password')
+		password.send_keys('welcome1')
+		password.send_keys(Keys.ENTER)
+		self.assertIn('Sign on successful', self.browser.find_element_by_id('id_messages').text)
 
 		# He goes to the Devices tab.
 
