@@ -10,6 +10,10 @@ class SmokeTest(TestCase):
 		found = resolve('/')
 		self.assertEqual(found.func, dashboard)
 
+	def test_leawood_url_resolves_to_dashboard_view(self):
+		found = resolve('/leawood/')
+		self.assertEqual(found.func, dashboard)
+
 
 	def test_dashboard_returns_correct_html(self):
 		response = self.client.get('/')

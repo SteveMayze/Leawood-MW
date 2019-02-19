@@ -19,6 +19,7 @@ from django.conf.urls import url
 from dashboard import views
 
 urlpatterns = [
-	url(r'^$', views.dashboard, name='dashboard')
+	url(r'^$', views.dashboard, name='dashboard'),
+	url(r'^leawood/$', views.dashboard, name='dashboard')
     # path('admin/', admin.site.urls),
 ]
