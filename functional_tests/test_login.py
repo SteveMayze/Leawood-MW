@@ -20,7 +20,7 @@ class LoginTest(FunctionalTest):
 		# He sees the main menu bar. Since he is not signed in, there is only
 		# the dashboard tab and an option to sign in at the top.
 		# TODO
-		self.wait_for_modal( 'id_loginModal' )
+		self.wait_for_modal_close( 'id_loginModal' )
 
 		signin_link = self.browser.find_element_by_link_text('Sign in')
 		self.assertTrue(signin_link)
@@ -29,8 +29,9 @@ class LoginTest(FunctionalTest):
 		signin_link.click()
 		# and sees that a Model dialog appears and requests a user name
 		# and password
-		login_dialog = self.browser.find_element_by_id('id_loginModal')
-		self.assertIn('show', login_dialog.get_attribute('class'))
+		# login_dialog = self.browser.find_element_by_id('id_loginModal')
+		self.wait_for_modal_show('id_loginModal')
+		# self.assertIn('show', login_dialog.get_attribute('class'))
 
 		self.check_placeholder( 'id_user_name', 'Enter your user ID')
 		self.check_placeholder( 'id_password', 'Enter your password')
@@ -42,7 +43,7 @@ class LoginTest(FunctionalTest):
 		# cancel_button.click()
 		login_dialog = self.browser.find_element_by_id('id_loginModal')
 		login_dialog.send_keys(Keys.ESCAPE)
-		self.wait_for_modal( 'id_loginModal' )
+		self.wait_for_modal_close( 'id_loginModal' )
 
 
 	def test_can_register(self):
@@ -70,7 +71,7 @@ class LoginTest(FunctionalTest):
 		# The strange work around from above is not needed here.
 		# login_dialog = self.browser.find_element_by_id('id_registerModal')
 		# login_dialog.send_keys(Keys.ENTER)
-		self.wait_for_modal( 'id_registerModal' )
+		self.wait_for_modal_close( 'id_registerModal' )
 
 
 	@skip("Skipping for the moment - until the Authentication is complete")
