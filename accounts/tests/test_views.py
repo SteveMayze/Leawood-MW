@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from importlib import import_module
 import accounts.views
+from unittest.mock import patch, call
 
 User = get_user_model()
 
@@ -64,7 +65,38 @@ class RegisterViewTest(TestCase):
 		)
 		self.assertEqual(message.tags, "error")
 
+	@patch('accounts.views.auth')
+	def test_calls_auth_login_with_user_if_there_is_one(self, mock_auth):
+		response = self.client.post('/accounts/register', data={
+			'username': 'abc',
+			'password': 'welcome1'
+			})
+		self.assertEqual(
+			mock_auth.authenticate.call_args,
+			call(username='abc', password='welcome1')		
+		)
 
+	@patch('accounts.views.auth')
+	def test_calls_authenticate_with_uid_from_get_request(self, mock_auth):
+		response = self.client.post('/accounts/register', data={
+			'username': 'abc',
+			'password': 'welcome1'
+			})
+		self.assertEqual(
+			mock_auth.authenticate.call_args,
+			call(username='abc', password='welcome1')		
+		)
+
+	@patch('accounts.views.auth')
+	def test_calls_auth_login_with_user_if_there_is_one(self, mock_auth):
+		response = self.client.post('/accounts/register', data={
+			'username': 'abc',
+			'password': 'welcome1'
+			})
+		self.assertEqual(
+			mock_auth.login.call_args,
+			call(response.wsgi_request, mock_auth.authenticate.return_value)
+		)
 
 
 
@@ -109,4 +141,27 @@ class LoginViewTest(TestCase):
 		session = SessionStore(session_key=session_key)
 		self.assertEqual('abc', session['username'])
 
+	@patch('accounts.views.auth')
+	def test_calls_authenticate_with_uid_from_get_request(self, mock_auth):
+		User.objects.create(username='abc')
+		response = self.client.post('/accounts/login', data={
+			'username': 'abc',
+			'password': 'welcome1'
+			})
+		self.assertEqual(
+			mock_auth.authenticate.call_args,
+			call(username='abc', password='welcome1')		
+		)
+
+	@patch('accounts.views.auth')
+	def test_calls_auth_login_with_user_if_there_is_one(self, mock_auth):
+		User.objects.create(username='abc')
+		response = self.client.post('/accounts/login', data={
+			'username': 'abc',
+			'password': 'welcome1'
+			})
+		self.assertEqual(
+			mock_auth.login.call_args,
+			call(response.wsgi_request, mock_auth.authenticate.return_value)
+		)
 

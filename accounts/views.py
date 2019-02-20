@@ -1,4 +1,4 @@
-from django.contrib import messages
+from django.contrib import auth, messages
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -25,6 +25,10 @@ def register( request ):
 			request,
 			"Registration was successful."
 		)
+		user = auth.authenticate(username=username, password=password)
+		if user:
+			auth.login(request, user)
+
 
 
 	return render(request, 'dashboard/dashboard.html')
@@ -37,6 +41,9 @@ def login( request ):
 
 		user = User.objects.get(username=username)
 		request.session['username'] = username
+		user = auth.authenticate(username=username, password=password)
+		if user:
+			auth.login(request, user)
 	except User.DoesNotExist:
 		messages.error(
 			request,
