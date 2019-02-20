@@ -73,6 +73,8 @@ class LoginTest(FunctionalTest):
 		# login_dialog.send_keys(Keys.ENTER)
 		self.wait_for_modal_close( 'id_registerModal' )
 
+		self.wait_for_welome('id_messages')
+
 
 	@skip("Skipping for the moment - until the Authentication is complete")
 	def test_can_sign_in(self):

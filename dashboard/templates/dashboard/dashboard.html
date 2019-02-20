@@ -40,9 +40,8 @@
 
 		<div class="conatiner">
 			<div class=row>
-				<div class="col-md-10 offset-md-1" id="id_messages">
-					
-				</div>	
+				<div class="col-md-10 offset-md-1" id="id_messages" >
+				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-10 offset-md-1 jumbotron text-center">
@@ -95,6 +94,8 @@
     				</div>
   				</div>
 			</div>
+			{% csrf_token %}
+
 		</form>	
 
 		<form action="#" method="post" id="id_registerForm">
@@ -126,6 +127,7 @@
     				</div>
   				</div>
 			</div>
+			{% csrf_token %}
 		</form>	
 
 		<!-- script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>

@@ -24,8 +24,8 @@ class FunctionalTest(LiveServerTestCase):
 		start_time = time.time()
 		while True:
 			try:
-				model = self.browser.find_element_by_id(modal_id)
-				self.assertNotIn('show', model.get_attribute('class'))
+				modal = self.browser.find_element_by_id(modal_id)
+				self.assertNotIn('show', modal.get_attribute('class'))
 				return
 			except (AssertionError, WebDriverException) as e:
 				if time.time() - start_time > MAX_WAIT:
@@ -36,13 +36,27 @@ class FunctionalTest(LiveServerTestCase):
 		start_time = time.time()
 		while True:
 			try:
-				model = self.browser.find_element_by_id(modal_id)
-				self.assertIn('show', model.get_attribute('class'))
+				modal = self.browser.find_element_by_id(modal_id)
+				self.assertIn('show', modal.get_attribute('class'))
 				return
 			except (AssertionError, WebDriverException) as e:
 				if time.time() - start_time > MAX_WAIT:
 					raise e
 				time.sleep(0.5)
+
+	def wait_for_welome(self, element_id):
+		start_time = time.time()
+		while True:
+			try:
+				element = self.browser.find_element_by_id(element_id)
+				self.assertIn('Welcome graeme', element.text)
+				return
+			except (AssertionError, WebDriverException) as e:
+				if time.time() - start_time > MAX_WAIT:
+					raise e
+				time.sleep(0.5)
+
+
 
 	def check_placeholder(self, element_id, value):
 		element = self.browser.find_element_by_id(element_id)
