@@ -69,11 +69,11 @@ class LoginTest(FunctionalTest):
 
 		WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/form[2]/div/div/div/div[3]/button[2]"))).click()
 		# The strange work around from above is not needed here.
-		# login_dialog = self.browser.find_element_by_id('id_registerModal')
-		# login_dialog.send_keys(Keys.ENTER)
 		self.wait_for_modal_close( 'id_registerModal' )
 
-		self.wait_for_welome('id_messages')
+		self.wait_for(self.browser.find_element_by_link_text('Sign off'))
+		
+		self.assertIn('Registration successful', self.browser.find_element_by_id('id_messages').text)
 
 
 	@skip("Skipping for the moment - until the Authentication is complete")
@@ -95,4 +95,5 @@ class LoginTest(FunctionalTest):
 		self.assertEqual(password.get_attribute('placeholder'), 'Enter your password')
 		password.send_keys('welcome1')
 		password.send_keys(Keys.ENTER)
+		self.wait_for_link('Sign off')
 		self.assertIn('Sign on successful', self.browser.find_element_by_id('id_messages').text)
