@@ -4,7 +4,7 @@ from dashboard.views import dashboard
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 
-class SmokeTest(TestCase):
+class DashboardViewTest(TestCase):
 
 	def test_root_url_resolves_to_dashboard_view(self):
 		found = resolve('/')
