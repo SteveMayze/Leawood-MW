@@ -80,11 +80,11 @@
       					<div class="modal-body">
 							<div class="form-group" id="inputUserIDFormGroup">				
 								<label class="control-label" for="id_user_name">User ID</label>				
-    							<input type="text" class="form-control" id="id_user_name" placeholder="Enter your user ID">    			
+    							<input type="text" class="form-control" name="username" id="id_user_name" placeholder="Enter your user ID">    			
 							</div>
 							<div class="form-group" id="inputPasswordFormGroup">				
 								<label class="control-label" for="id_password">Password</label>				
-    							<input type="password" class="form-control" id="id_password" placeholder="Enter your password">    			
+    							<input type="password" class="form-control" name="password" id="id_password" placeholder="Enter your password">    			
 							</div>
       					</div>
       					<div class="modal-footer">
@@ -98,7 +98,7 @@
 
 		</form>	
 
-		<form action="#" method="post" id="id_registerForm">
+		<form action="accounts/register" method="post" id="id_registerForm">
 			<div class="modal fade" id="id_registerModal" tabindex="-1" aria-hidden="true" style="display: none;">
   				<div class="modal-dialog modal-sm">
     				<div class="modal-content">
@@ -107,18 +107,18 @@
         					<button id="id_login_dismiss" type="button" class="close" data-dismiss="modal">&times;</button>
       					</div>
       					<div class="modal-body">
-							<div class="form-group" id="inputRegisterUserIDFormGroup">				
+      						{{ registration_form.as_p }}
+							<!-- div class="form-group" id="inputRegisterUserIDFormGroup">				
 								<label class="control-label" for="id_user_name">User ID</label>				
-    							<input type="text" class="form-control" id="id_user_name_register" placeholder="Enter your user ID">    			
+    							<input type="text" class="form-control" name="username" id="id_user_name_register" placeholder="Enter your user ID">    			
 							</div>
 							<div class="form-group" id="inputPregisterPasswordFormGroup">				
 								<label class="control-label" for="id_password_register">Password</label>				
-    							<input type="password" class="form-control" id="id_password1_register" placeholder="Enter your password">    			
+    							<input type="password" class="form-control" name="password" id="id_password1_register" placeholder="Enter your password">    			
 							</div>
 							<div class="form-group" id="inputPregisterPassword2FormGroup">				
-								<!-- label class="control-label" for="id_password2_register"></label -->				
-    							<input type="password" class="form-control" id="id_password2_register" placeholder="Confirm your password">    			
-							</div>
+    							<input type="password" class="form-control" name="password2" id="id_password2_register" placeholder="Confirm your password">    			
+							</div -->
       					</div>
       					<div class="modal-footer">
        	 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

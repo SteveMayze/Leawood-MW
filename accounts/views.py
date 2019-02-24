@@ -2,36 +2,40 @@ from django.contrib import auth, messages
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 from django.shortcuts import render
+from accounts.forms import RegistrationForm
 
 User = get_user_model()
 
 def register( request ):
 
-	username = request.POST['username']
-	request.session['username'] = username
-	password = request.POST['password']
+	registration_form = RegistrationForm(request.POST)
 
-	try:
-		user = User.objects.get(username=username)
-		messages.error(
-			request,
-			"The username is already taken."
-		)
-	except User.DoesNotExist:
-		user = User(username=username)
-		user.set_password(password)
-		user.save()
-		messages.success(
-			request,
-			"Registration was successful."
-		)
-		user = auth.authenticate(username=username, password=password)
-		if user:
-			auth.login(request, user)
+	# username = request.POST['username']
+	# request.session['username'] = username
+	# password = request.POST['password']
 
+	if registration_form.is_valid():
+		username = registration_form.username
+		password = registration_form.password
+		try:
+			user = User.objects.get(username=username)
+			messages.error(
+				request,
+				"The username is already taken."
+			)
+		except User.DoesNotExist:
+			user = User(username=username)
+			user.set_password(password)
+			user.save()
+			messages.success(
+				request,
+				"Registration was successful."
+			)
+			user = auth.authenticate(username=username, password=password)
+			if user:
+				auth.login(request, user)
 
-
-	return render(request, 'dashboard/dashboard.html')
+	return redirect('/')
 
 
 def login( request ):
