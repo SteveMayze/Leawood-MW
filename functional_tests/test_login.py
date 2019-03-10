@@ -79,6 +79,26 @@ class LoginTest(FunctionalTest):
 		self.browser.find_element_by_link_text('Sign off').click()
 		self.wait_for(lambda: self.browser.find_element_by_link_text('Register'))
 
+	def test_can_not_register_again( self ):
+		# Graeme is curious to know what happes when he attempts to register again
+		self.browser.get(self.live_server_url)
+
+		# Goes back into the registration form. 
+		register_link = self.browser.find_element_by_link_text('Register').click()
+
+		# The modal dialog opens and he enters the same details again
+		login_dialog = self.browser.find_element_by_id('id_registerModal')
+		self.assertIn('show', login_dialog.get_attribute('class'))
+		self.browser.find_element_by_id('id_registration_username').send_keys('graeme')
+		self.browser.find_element_by_id('id_registration_password').send_keys('welcome1')
+		self.browser.find_element_by_id('id_registration_password2').send_keys('welcome1')
+		WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/form[2]/div/div/div/div[3]/button[2]"))).click()
+
+		# Graeme see that he is not signed in and there is a warning that the name
+		# is already taken.
+		# --- This could be JavaScript i.e. Ajax to verify the user name
+		self.assertIn('The name is already in use', self.browser.find_elements_by_class_name('messages')[0].text)
+
 
 
 
