@@ -18,7 +18,9 @@ class RegisterViewTest(TestCase):
 	def test_register_uses_homepage(self):
 		response = self.client.post('/accounts/register', data={
 			'username': 'abc',
-			'password': 'welcome1'
+			'password': 'welcome1',
+			'password2': 'welcome1'
+
 			})
 		self.assertEqual(302, response.status_code)
 		# self.assertTemplateUsed(response, 'dashboard/dashboard.html')
@@ -27,7 +29,9 @@ class RegisterViewTest(TestCase):
 	def test_register_creates_session_cookie(self):
 		response = self.client.post('/accounts/register', data={
 			'username': 'abc',
-			'password': 'welcome1'
+			'password': 'welcome1',
+			'password2': 'welcome1'
+
 			})
 		response.has_header('csrftoken')
 
@@ -35,7 +39,8 @@ class RegisterViewTest(TestCase):
 	def test_session_cookie_contains_username(self):
 		self.client.post('/accounts/register', data={
 			'username': 'abc',
-			'password': 'welcome1'
+			'password': 'welcome1',
+			'password2': 'welcome1'
 			})
 		session_key = Session.objects.all()[0].session_key
 		session = SessionStore(session_key=session_key)
@@ -45,7 +50,8 @@ class RegisterViewTest(TestCase):
 	def test_registration_creates_new_user(self):
 		self.client.post('/accounts/register', data={
 			'username': 'abc',
-			'password': 'welcome1'
+			'password': 'welcome1',
+			'password2': 'welcome1'
 			})
 		user = User.objects.all()[0]
 
@@ -58,7 +64,8 @@ class RegisterViewTest(TestCase):
 		user = User.objects.create(username="abc")
 		response = self.client.post('/accounts/register', data={
 			'username': 'abc',
-			'password': 'welcome1'
+			'password': 'welcome1',
+			'password2': 'welcome1'
 			})
 		message = list(response.context['messages'])[0]
 		self.assertEqual(
@@ -71,7 +78,8 @@ class RegisterViewTest(TestCase):
 	def test_calls_auth_login_with_user_if_there_is_one(self, mock_auth):
 		response = self.client.post('/accounts/register', data={
 			'username': 'abc',
-			'password': 'welcome1'
+			'password': 'welcome1',
+			'password2': 'welcome1'
 			})
 		self.assertEqual(
 			mock_auth.authenticate.call_args,
@@ -82,7 +90,8 @@ class RegisterViewTest(TestCase):
 	def test_calls_authenticate_with_uid_from_get_request(self, mock_auth):
 		response = self.client.post('/accounts/register', data={
 			'username': 'abc',
-			'password': 'welcome1'
+			'password': 'welcome1',
+			'password2': 'welcome1'
 			})
 		self.assertEqual(
 			mock_auth.authenticate.call_args,
@@ -93,7 +102,8 @@ class RegisterViewTest(TestCase):
 	def test_calls_auth_login_with_user_if_there_is_one(self, mock_auth):
 		response = self.client.post('/accounts/register', data={
 			'username': 'abc',
-			'password': 'welcome1'
+			'password': 'welcome1',
+			'password2': 'welcome1'
 			})
 		self.assertEqual(
 			mock_auth.login.call_args,

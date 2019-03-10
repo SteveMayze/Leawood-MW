@@ -45,13 +45,20 @@
  		</nav>
 
 		<div class="conatiner">
-			<div class=row>
-				<div class="col-md-10 offset-md-1" id="id_messages" >
-				</div>
-			</div>
 			<div class="row">
 				<div class="col-md-10 offset-md-1 jumbotron text-center">
 					<h1>{% block header_text %}{% endblock %}</h1>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-8 offset-md-2 col-sm-8 offset-sm-2 text-center">
+					{% if messages %}
+						<ul class="messages">
+							{% for message in messages %}
+								<li{% if message.tags %} class="{{ message.tag }}"{% endif %}>{{ message }}</li>
+							{% endfor %}
+						</ul>
+					{% endif %}
 				</div>
 			</div>
 

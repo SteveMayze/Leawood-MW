@@ -58,22 +58,22 @@ class LoginTest(FunctionalTest):
 		login_dialog = self.browser.find_element_by_id('id_registerModal')
 		self.assertIn('show', login_dialog.get_attribute('class'))
 
-		self.check_placeholder( 'id_user_name_register', 'Enter your user ID')
-		self.check_placeholder( 'id_password1_register', 'Enter your password')
-		self.check_placeholder( 'id_password2_register', 'Confirm your password')
+		self.check_placeholder( 'id_registration_username', 'Enter your user ID')
+		self.check_placeholder( 'id_registration_password', 'Enter your password')
+		self.check_placeholder( 'id_registration_password2', 'Confirm your password')
 
 		# Graeme enters his (minimal) registration
-		self.browser.find_element_by_id('id_user_name_register').send_keys('graeme')
-		self.browser.find_element_by_id('id_password1_register').send_keys('welcome1')
-		self.browser.find_element_by_id('id_password2_register').send_keys('welcome1')
+		self.browser.find_element_by_id('id_registration_username').send_keys('graeme')
+		self.browser.find_element_by_id('id_registration_password').send_keys('welcome1')
+		self.browser.find_element_by_id('id_registration_password2').send_keys('welcome1')
 
 		WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/form[2]/div/div/div/div[3]/button[2]"))).click()
 		# The strange work around from above is not needed here.
 		self.wait_for_modal_close( 'id_registerModal' )
 
-		self.wait_for(self.browser.find_element_by_link_text('Sign off'))
+		self.wait_for(lambda: self.browser.find_element_by_link_text('Sign off'))
 		
-		self.assertIn('Registration successful', self.browser.find_element_by_id('id_messages').text)
+		self.assertIn('Registration was successful', self.browser.find_elements_by_class_name('messages')[0].text)
 
 
 	@skip("Skipping for the moment - until the Authentication is complete")

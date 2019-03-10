@@ -15,13 +15,14 @@ def register( request ):
 	# password = request.POST['password']
 
 	if registration_form.is_valid():
-		username = registration_form.username
-		password = registration_form.password
+		username = registration_form['username'].value()
+		password = registration_form['password'].value()
 		try:
 			user = User.objects.get(username=username)
 			messages.error(
 				request,
-				"The username is already taken."
+				"The username is already taken.",
+				extra_tags="error-message"
 			)
 		except User.DoesNotExist:
 			user = User(username=username)
@@ -29,12 +30,13 @@ def register( request ):
 			user.save()
 			messages.success(
 				request,
-				"Registration was successful."
+				"Registration was successful.",
+				extra_tags="success-message"
 			)
+			request.session['username'] = username
 			user = auth.authenticate(username=username, password=password)
 			if user:
 				auth.login(request, user)
-
 	return redirect('/')
 
 
@@ -42,7 +44,6 @@ def login( request ):
 	try:	
 		username = request.POST['username']
 		password = request.POST['password']
-
 		user = User.objects.get(username=username)
 		request.session['username'] = username
 		user = auth.authenticate(username=username, password=password)
