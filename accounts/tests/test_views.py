@@ -74,17 +74,6 @@ class RegisterViewTest(TestCase):
 		)
 		self.assertEqual(message.tags, "error")
 
-	@patch('accounts.views.auth')
-	def test_calls_auth_login_with_user_if_there_is_one(self, mock_auth):
-		response = self.client.post('/accounts/register', data={
-			'username': 'abc',
-			'password': 'welcome1',
-			'password2': 'welcome1'
-			})
-		self.assertEqual(
-			mock_auth.authenticate.call_args,
-			call(username='abc', password='welcome1')		
-		)
 
 	@patch('accounts.views.auth')
 	def test_calls_authenticate_with_uid_from_get_request(self, mock_auth):
@@ -98,17 +87,6 @@ class RegisterViewTest(TestCase):
 			call(username='abc', password='welcome1')		
 		)
 
-	@patch('accounts.views.auth')
-	def test_calls_auth_login_with_user_if_there_is_one(self, mock_auth):
-		response = self.client.post('/accounts/register', data={
-			'username': 'abc',
-			'password': 'welcome1',
-			'password2': 'welcome1'
-			})
-		self.assertEqual(
-			mock_auth.login.call_args,
-			call(response.wsgi_request, mock_auth.authenticate.return_value)
-		)
 
 
 
@@ -177,3 +155,14 @@ class LoginViewTest(TestCase):
 			call(response.wsgi_request, mock_auth.authenticate.return_value)
 		)
 
+class logoutTest( TestCase ):
+	def test_logout_uses_homepage(self):
+		response = self.client.post('/accounts/logout')
+		self.assertEqual(302, response.status_code)
+		## self.assertTemplateUsed(response, 'dashboard/dashboard.html')
+
+
+	@patch('accounts.views.auth')
+	def test_signoff_returns_to_dashboard(self, mock_auth):
+		self.client.post('/accounts/logout')
+		self.assertTrue(mock_auth.logout.called)

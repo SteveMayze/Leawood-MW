@@ -68,12 +68,18 @@ class LoginTest(FunctionalTest):
 		self.browser.find_element_by_id('id_registration_password2').send_keys('welcome1')
 
 		WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/form[2]/div/div/div/div[3]/button[2]"))).click()
-		# The strange work around from above is not needed here.
+		# -- The strange work around from above is not needed here.
+		# Graeme sees that the registration and sign on have gone and are replaced with
+		# The link to sign on.
 		self.wait_for_modal_close( 'id_registerModal' )
-
 		self.wait_for(lambda: self.browser.find_element_by_link_text('Sign off'))
-		
 		self.assertIn('Registration was successful', self.browser.find_elements_by_class_name('messages')[0].text)
+
+		# Graeme signs off to see if he can sign on again.
+		self.browser.find_element_by_link_text('Sign off').click()
+		self.wait_for(lambda: self.browser.find_element_by_link_text('Register'))
+
+
 
 
 	@skip("Skipping for the moment - until the Authentication is complete")
@@ -97,3 +103,6 @@ class LoginTest(FunctionalTest):
 		password.send_keys(Keys.ENTER)
 		self.wait_for_link('Sign off')
 		self.assertIn('Sign on successful', self.browser.find_element_by_id('id_messages').text)
+
+
+# Graeme forgets his password
