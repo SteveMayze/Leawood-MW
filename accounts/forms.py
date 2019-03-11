@@ -6,7 +6,7 @@ User = get_user_model()
 
 PASSWORDS_DONT_MATCH = 'The passwords do not match'
 
-class RegistrationForm(forms.models.ModelForm):
+class RegistrationForm(forms.Form):
 	username = forms.CharField(widget=forms.TextInput(attrs={
 			'id': 'id_registration_username',
 			'placeholder': 'Enter your user ID',
@@ -22,10 +22,6 @@ class RegistrationForm(forms.models.ModelForm):
 			'placeholder': 'Confirm your password',
 			'class': 'form-control input-lg'
 		}))
-
-	class Meta:
-		model = User
-		fields = ('username', 'password',)
 
 	def clean_password2(self, *args, **kwargs):
 		if self.cleaned_data.get('password') != self.cleaned_data.get('password2'):

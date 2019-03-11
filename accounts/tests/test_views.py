@@ -15,6 +15,10 @@ Session = SessionStore.get_model_class()
 
 class RegisterViewTest(TestCase):
 
+
+	# def setUp( self ):
+	#	User.objects.create(username="def", password="1234")
+
 	def test_register_uses_homepage(self):
 		response = self.client.post('/accounts/register', data={
 			'username': 'abc',
@@ -53,26 +57,22 @@ class RegisterViewTest(TestCase):
 			'password': 'welcome1',
 			'password2': 'welcome1'
 			})
-		user = User.objects.all()[0]
+		user = User.objects.get(username='abc')
 
 		self.assertEqual('abc', user.username)
 		self.assertNotEqual('welcome1', user.password)
 
 
-	@skip
-	def test_registration_username_must_be_unique(self):
-		user = User.objects.create(username="abc")
+	@patch('accounts.views.messages')
+	def test_registration_username_must_be_unique(self, mock_messages):
+		User.objects.create(username="def", password="1234")
 		response = self.client.post('/accounts/register', data={
-			'username': 'abc',
+			'username': 'def',
 			'password': 'welcome1',
 			'password2': 'welcome1'
 			})
-		message = list(response.context['messages'])[0]
-		self.assertEqual(
-			message.message,
-			"The username is already taken."
-		)
-		self.assertEqual(message.tags, "error")
+		self.assertTrue(mock_messages.error.called)
+
 
 
 	@patch('accounts.views.auth')
@@ -86,7 +86,6 @@ class RegisterViewTest(TestCase):
 			mock_auth.authenticate.call_args,
 			call(username='abc', password='welcome1')		
 		)
-
 
 
 

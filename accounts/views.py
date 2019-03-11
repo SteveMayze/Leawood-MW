@@ -15,28 +15,29 @@ def register( request ):
 	# password = request.POST['password']
 
 	if registration_form.is_valid():
-		username = registration_form['username'].value()
-		password = registration_form['password'].value()
+		_username = registration_form['username'].value()
+		_password = registration_form['password'].value()
 		try:
-			user = User.objects.get(username=username)
+			user = User.objects.get( username=_username )
 			messages.error(
 				request,
-				"The username is already taken.",
+				f'The username "{_username}" is already taken.',
 				extra_tags="error-message"
 			)
 		except User.DoesNotExist:
-			user = User(username=username)
-			user.set_password(password)
+			user = User(username=_username)
+			user.set_password(_password)
 			user.save()
 			messages.success(
 				request,
 				"Registration was successful.",
 				extra_tags="success-message"
 			)
-			request.session['username'] = username
-			user = auth.authenticate(username=username, password=password)
+			request.session['username'] = _username
+			user = auth.authenticate(username=_username, password=_password)
 			if user:
 				auth.login(request, user)
+
 	return redirect('/')
 
 

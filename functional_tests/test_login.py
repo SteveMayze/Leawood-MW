@@ -79,10 +79,6 @@ class LoginTest(FunctionalTest):
 		self.browser.find_element_by_link_text('Sign off').click()
 		self.wait_for(lambda: self.browser.find_element_by_link_text('Register'))
 
-	def test_can_not_register_again( self ):
-		# Graeme is curious to know what happes when he attempts to register again
-		self.browser.get(self.live_server_url)
-
 		# Goes back into the registration form. 
 		register_link = self.browser.find_element_by_link_text('Register').click()
 
@@ -97,7 +93,10 @@ class LoginTest(FunctionalTest):
 		# Graeme see that he is not signed in and there is a warning that the name
 		# is already taken.
 		# --- This could be JavaScript i.e. Ajax to verify the user name
-		self.assertIn('The name is already in use', self.browser.find_elements_by_class_name('messages')[0].text)
+		self.assertIn(f'The username "graeme" is already taken', self.browser.find_elements_by_class_name('messages')[0].text)
+
+		# Graeme finds himself back to needing to log in again
+		self.wait_for(lambda: self.browser.find_element_by_link_text('Register'))
 
 
 
