@@ -42,15 +42,17 @@ def register( request ):
 
 
 def login( request ):
-	try:	
-		username = request.POST['username']
-		password = request.POST['password']
-		user = User.objects.get(username=username)
-		request.session['username'] = username
-		user = auth.authenticate(username=username, password=password)
-		if user:
-			auth.login(request, user)
-	except User.DoesNotExist:
+	username = request.POST['username']
+	password = request.POST['password']
+	request.session['username'] = username
+	user = auth.authenticate(username=username, password=password)
+	if user:
+		auth.login(request, user)
+		messages.success(
+			request,
+			"Login was successful."
+		)
+	else:
 		messages.error(
 			request,
 			"Login was unsuccessful."

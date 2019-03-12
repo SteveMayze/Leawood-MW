@@ -82,7 +82,7 @@
 			</div>
 		</div>
 
-		<form action="#" method="post" id="id_loginForm">
+		<form action="accounts/login" method="post" id="id_loginForm">
 			<div class="modal fade" id="id_loginModal" tabindex="-1" aria-hidden="true" style="display: none;">
   				<div class="modal-dialog modal-sm">
     				<div class="modal-content">
@@ -157,6 +157,10 @@
 		$(document).ready(function () {
 		  window.Dashboard.initialize();
 		});    
+
+		$('#id_registerModal').on('shown.bs.modal', function () {
+  			$('#id_username').trigger('focus')
+		})
 
 		$('#id_loginModal').on('shown.bs.modal', function () {
   			$('#id_user_name').trigger('focus')

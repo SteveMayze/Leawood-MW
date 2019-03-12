@@ -7,6 +7,9 @@ from selenium.common.exceptions import WebDriverException
 import time
 from unittest import skip
 
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
 
 class LoginTest(FunctionalTest):
 
@@ -72,7 +75,7 @@ class LoginTest(FunctionalTest):
 		# Graeme sees that the registration and sign on have gone and are replaced with
 		# The link to sign on.
 		self.wait_for_modal_close( 'id_registerModal' )
-		self.wait_for(lambda: self.browser.find_element_by_link_text('Sign off'))
+		self.wait_for_link('Sign off')
 		self.assertIn('Registration was successful', self.browser.find_elements_by_class_name('messages')[0].text)
 
 		# Graeme signs off to see if he can sign on again.
@@ -100,20 +103,24 @@ class LoginTest(FunctionalTest):
 
 
 
-
-	@skip("Skipping for the moment - until the Authentication is complete")
 	def test_can_sign_in(self):
 		# First, he has to sign in. He clicks on the sign in link and
 		# a Modal dialog appears asking for his credentials.
+		test_user = User.objects.create(username="graeme")
+		test_user.set_password("welcome1")
+		test_user.save()
+
 		self.browser.get(self.live_server_url)
 
 		signin_link = self.browser.find_element_by_link_text('Sign in')
 		signin_link.click()
-		time.sleep(1)
+
+		login_dialog = self.browser.find_element_by_id('id_loginModal')
+		self.assertIn('show', login_dialog.get_attribute('class'))
+
+
 		user_name = self.browser.find_element_by_id('id_user_name')
 		self.assertEqual(user_name.get_attribute('placeholder'), 'Enter your user ID')
-
-
 
 		user_name.send_keys('graeme')
 		password = self.browser.find_element_by_id('id_password')
@@ -121,7 +128,6 @@ class LoginTest(FunctionalTest):
 		password.send_keys('welcome1')
 		password.send_keys(Keys.ENTER)
 		self.wait_for_link('Sign off')
-		self.assertIn('Sign on successful', self.browser.find_element_by_id('id_messages').text)
-
+		self.assertIn('Login was successful.', self.browser.find_elements_by_class_name('messages')[0].text)
 
 # Graeme forgets his password
