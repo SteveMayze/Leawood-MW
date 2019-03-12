@@ -130,4 +130,32 @@ class LoginTest(FunctionalTest):
 		self.wait_for_link('Sign off')
 		self.assertIn('Login was successful.', self.browser.find_elements_by_class_name('messages')[0].text)
 
-# Graeme forgets his password
+
+	def test_user_can_reset_password( self ):
+		test_user = User.objects.create(username="graeme")
+		test_user.set_password("welcome1")
+		test_user.save()
+
+		self.browser.get(self.live_server_url)
+		# Graeme attempts to sign in after a long while and realises he
+		# has forgotten his password.
+
+		# He clicks on the Sign in
+		signin_link = self.browser.find_element_by_link_text('Sign in')
+		signin_link.click()
+		# ... and sees a "forgot password link" and clicks it.
+		forgotten_password_link = self.browser.find_element_by_link_text('Forgotten password?')
+		forgotten_password_link.click()
+
+		# He is directed to a completely new page where he can enter
+		# his email address
+
+		# He enters his email address and clicks send.
+
+		# He has to check his email where there is a link that directs him back
+		# to another page where he can set a new password
+
+		# Once he sets a new password, he is automatically logged in.
+
+
+		self.fail("Write the tests for retrieving the password!")
