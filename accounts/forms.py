@@ -27,3 +27,14 @@ class RegistrationForm(forms.Form):
 		if self.cleaned_data.get('password') != self.cleaned_data.get('password2'):
 			raise ValidationError(PASSWORDS_DONT_MATCH)
 
+class LoginForm( forms.Form ):
+	username = forms.CharField(widget=forms.TextInput(attrs={
+			'id': 'id_login_username',
+			'placeholder': 'Enter your user ID',
+			'class': 'form-control input-lg'
+		}))
+	password = forms.CharField(widget=forms.PasswordInput(attrs={
+			'id': 'id_login_password',
+			'placeholder': 'Enter your password',
+			'class': 'form-control input-lg'
+		}))

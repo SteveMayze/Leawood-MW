@@ -2,7 +2,7 @@ from django.contrib import auth, messages
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 from django.shortcuts import render
-from accounts.forms import RegistrationForm
+from accounts.forms import RegistrationForm, LoginForm
 
 User = get_user_model()
 
@@ -42,16 +42,26 @@ def register( request ):
 
 
 def login( request ):
-	username = request.POST['username']
-	password = request.POST['password']
-	request.session['username'] = username
-	user = auth.authenticate(username=username, password=password)
-	if user:
-		auth.login(request, user)
-		messages.success(
-			request,
-			"Login was successful."
-		)
+	# username = request.POST['username']
+	# password = request.POST['password']
+
+	login_form = LoginForm(request.POST)
+	if login_form.is_valid():
+		username = login_form['username'].value()
+		password = login_form['password'].value()
+		user = auth.authenticate(username=username, password=password)
+		if user:
+			auth.login(request, user)
+			request.session['username'] = username
+			messages.success(
+				request,
+				"Login was successful."
+			)
+		else:
+			messages.error(
+				request,
+				"Login was unsuccessful."
+			)
 	else:
 		messages.error(
 			request,

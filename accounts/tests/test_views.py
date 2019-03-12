@@ -123,7 +123,9 @@ class LoginViewTest(TestCase):
 
 
 	def test_login_cookie_contains_username(self):
-		User.objects.create(username='abc')
+		user = User.objects.create(username='abc')
+		user.set_password("welcome1")
+		user.save()
 		self.client.post('/accounts/login', data={
 			'username': 'abc',
 			'password': 'welcome1'

@@ -36,8 +36,8 @@ class LoginTest(FunctionalTest):
 		self.wait_for_modal_show('id_loginModal')
 		# self.assertIn('show', login_dialog.get_attribute('class'))
 
-		self.check_placeholder( 'id_user_name', 'Enter your user ID')
-		self.check_placeholder( 'id_password', 'Enter your password')
+		self.check_placeholder( 'id_login_username', 'Enter your user ID')
+		self.check_placeholder( 'id_login_password', 'Enter your password')
 
 		# He does not know any credentials, so he cancels the dialog.
 		WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/form[1]/div/div/div/div[3]/button[1]"))).click()
@@ -119,11 +119,11 @@ class LoginTest(FunctionalTest):
 		self.assertIn('show', login_dialog.get_attribute('class'))
 
 
-		user_name = self.browser.find_element_by_id('id_user_name')
+		user_name = self.browser.find_element_by_id('id_login_username')
 		self.assertEqual(user_name.get_attribute('placeholder'), 'Enter your user ID')
 
 		user_name.send_keys('graeme')
-		password = self.browser.find_element_by_id('id_password')
+		password = self.browser.find_element_by_id('id_login_password')
 		self.assertEqual(password.get_attribute('placeholder'), 'Enter your password')
 		password.send_keys('welcome1')
 		password.send_keys(Keys.ENTER)

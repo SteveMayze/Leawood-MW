@@ -3,7 +3,8 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from accounts.forms import (
 	PASSWORDS_DONT_MATCH, 
-	RegistrationForm
+	RegistrationForm,
+	LoginForm
 )
 
 User = get_user_model()
@@ -30,3 +31,22 @@ class RegistrationFormTest(TestCase):
 		})
 
 		self.assertTrue(form.is_valid())
+
+class LoginFormTest( TestCase ):
+
+	def test_can_login_with_form( self ):
+		form = LoginForm( data = { 
+			'username': 'abc',
+			'password': 'welcome1'
+		})
+
+		self.assertEqual( 'abc', form['username'].value())		
+		self.assertEqual( 'welcome1', form['password'].value())
+
+	def test_values_can_not_be_empty( self ):
+		form = LoginForm( data = { 
+			'username': '',
+			'password': ''
+		})
+
+		self.assertFalse(form.is_valid())
