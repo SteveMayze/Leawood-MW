@@ -151,11 +151,20 @@ class LoginTest(FunctionalTest):
 		# his email address
 
 		# He enters his email address and clicks send.
+		# A secret token is generated and stored with the users 
+		# email address (lookup the username) and send it to them
+		# -  This needs to be linked to the user name so the registration 
+		#    will now require a valid email address
 
-		# He has to check his email where there is a link that directs him back
-		# to another page where he can set a new password
 
-		# Once he sets a new password, he is automatically logged in.
+		# He has to check his email where there is a link containing that token
+
+		# When they click on the link, the token is checked and they will be 
+		# directed to another page where he can set a new password.
+
+		# Once he sets a new password, he is automatically logged in and 
+		# directed back to the home page.
+
 
 
 		self.fail("Write the tests for retrieving the password!")
