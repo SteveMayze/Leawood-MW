@@ -5,7 +5,6 @@
 		<meta http-equiv="X-UA-Compatible" content=" IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Leawood</title>
-		<!-- link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" -->		
 		<link rel="stylesheet" type="text/css" href="/static/bootstrap/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="/static/base.css">
 	</head>
@@ -65,7 +64,7 @@
 {% block page_content %}
 {% endblock %}
 
-		<form action="accounts/login" method="post" id="id_loginForm">
+		<form action="{% url 'accounts_login' %}" method="post" id="id_loginForm">
 			<div class="modal fade" id="id_loginModal" tabindex="-1" aria-hidden="true" style="display: none;">
   				<div class="modal-dialog modal-sm">
     				<div class="modal-content">
@@ -88,6 +87,9 @@
       					<div class="modal-footer">
        	 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
         					<button type="submit" class="btn btn-primary">Login</button>
+       	 					<div>
+		      					<a href="{% url 'accounts_reset_password' %}">Forgotten password?</a>
+	      					</div>
       					</div>
     				</div>
   				</div>
@@ -96,7 +98,7 @@
 
 		</form>	
 
-		<form action="accounts/register" method="post" id="id_registerForm">
+		<form action="{% url 'accounts_register' %}" method="post" id="id_registerForm">
 			<div class="modal fade" id="id_registerModal" tabindex="-1" aria-hidden="true" style="display: none;">
   				<div class="modal-dialog modal-sm">
     				<div class="modal-content">

@@ -73,3 +73,7 @@ def login( request ):
 def logout( request ):
 	auth.logout( request )
 	return redirect('/')
+
+
+def reset_password( request ):
+	return render(request, 'accounts/reset_password.html')

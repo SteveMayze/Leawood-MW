@@ -158,7 +158,7 @@ class LoginViewTest(TestCase):
 			call(response.wsgi_request, mock_auth.authenticate.return_value)
 		)
 
-class logoutTest( TestCase ):
+class LogoutTest( TestCase ):
 	def test_logout_uses_homepage(self):
 		response = self.client.post('/accounts/logout')
 		self.assertEqual(302, response.status_code)
@@ -169,3 +169,9 @@ class logoutTest( TestCase ):
 	def test_signoff_returns_to_dashboard(self, mock_auth):
 		self.client.post('/accounts/logout')
 		self.assertTrue(mock_auth.logout.called)
+
+class ResetPasswordViewTest( TestCase ):
+	def test_uses_reset_password_page( self ):
+		response = self.client.post('/accounts/reset_password')
+		self.assertEqual(200, response.status_code)
+		self.assertTemplateUsed(response, 'accounts/reset_password.html')
