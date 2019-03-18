@@ -149,6 +149,7 @@ class LoginTest(FunctionalTest):
 
 		# He is directed to a completely new page where he can enter
 		# his email address
+		self.wait_for(lambda: self.browser.find_element_by_id('id_email_address'))
 
 		# He enters his email address and clicks send.
 		# A secret token is generated and stored with the users 
