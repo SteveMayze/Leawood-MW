@@ -8,7 +8,7 @@ User = get_user_model()
 class UserModelTest(TestCase):
 
 	def test_user_is_created(self):
-		user = User(username="abc")
+		user = User(username="abc", email="ab@cd")
 		self.assertEquals("abc", user.username)
 
 		user.save()

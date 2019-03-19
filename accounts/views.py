@@ -3,8 +3,13 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 from django.shortcuts import render
 from accounts.forms import RegistrationForm, LoginForm
+from accounts.models import Token
+import uuid
+from django.core.mail import send_mail
+
 
 User = get_user_model()
+
 
 def register( request ):
 
@@ -16,6 +21,7 @@ def register( request ):
 
 	if registration_form.is_valid():
 		_username = registration_form['username'].value()
+		_email = registration_form['email'].value()
 		_password = registration_form['password'].value()
 		try:
 			user = User.objects.get( username=_username )
@@ -25,7 +31,7 @@ def register( request ):
 				extra_tags="error-message"
 			)
 		except User.DoesNotExist:
-			user = User(username=_username)
+			user = User(username=_username, email=_email)
 			user.set_password(_password)
 			user.save()
 			messages.success(
@@ -76,4 +82,25 @@ def logout( request ):
 
 
 def reset_password( request ):
+	if request.method == 'POST':
+		username = request.POST['username']
+		email = User.objects.get(username=username).email
+		uid = str(uuid.uuid4())
+		Token.objects.create(username=username, uid=uid)
+		url = request.build_absolute_uri(f'/accounts/new_password?uid={uid}')
+		send_mail(
+			'Leawood password reset',
+			f'Use this link to reset your password:\n\n{url}',
+			'noreply@leawood.com.au',
+			[email],
+			)
+		return render(request, 'accounts/reset_email_sent.html')
 	return render(request, 'accounts/reset_password.html')
+
+def new_password( request ):
+	if request.method == 'GET':
+		uid = request.GET.get('token')
+		username = Token.objects.get(uid=uid)
+	if request.method == 'POST':
+		password = request.POST.get('password')
+	return render(request, 'accounts/new_password.html')	

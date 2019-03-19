@@ -12,6 +12,11 @@ class RegistrationForm(forms.Form):
 			'placeholder': 'Enter your user ID',
 			'class': 'form-control input-lg'
 		}))
+	email = forms.EmailField(widget=forms.EmailInput(attrs={
+			'id': 'id_registration_email',
+			'placeholder': 'your.email@address.com',
+			'class': 'form-control input-lg'
+		}))
 	password = forms.CharField(widget=forms.PasswordInput(attrs={
 			'id': 'id_registration_password',
 			'placeholder': 'Enter your password',

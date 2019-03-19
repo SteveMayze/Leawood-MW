@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from importlib import import_module
 import accounts.views
+from accounts.models import Token
 from unittest.mock import patch, call
 from unittest import skip
 
@@ -12,6 +13,8 @@ User = get_user_model()
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 Session = SessionStore.get_model_class()
+
+TEST_EMAIL = "smayze@yahoo.com"
 
 class RegisterViewTest(TestCase):
 
@@ -22,6 +25,7 @@ class RegisterViewTest(TestCase):
 	def test_register_uses_homepage(self):
 		response = self.client.post('/accounts/register', data={
 			'username': 'abc',
+			'email': 'abc@def.com',
 			'password': 'welcome1',
 			'password2': 'welcome1'
 
@@ -33,6 +37,7 @@ class RegisterViewTest(TestCase):
 	def test_register_creates_session_cookie(self):
 		response = self.client.post('/accounts/register', data={
 			'username': 'abc',
+			'email': 'abc@def.com',
 			'password': 'welcome1',
 			'password2': 'welcome1'
 
@@ -43,6 +48,7 @@ class RegisterViewTest(TestCase):
 	def test_session_cookie_contains_username(self):
 		self.client.post('/accounts/register', data={
 			'username': 'abc',
+			'email': 'abc@def.com',
 			'password': 'welcome1',
 			'password2': 'welcome1'
 			})
@@ -54,13 +60,16 @@ class RegisterViewTest(TestCase):
 	def test_registration_creates_new_user(self):
 		self.client.post('/accounts/register', data={
 			'username': 'abc',
+			'email': 'abc@def.com',
 			'password': 'welcome1',
 			'password2': 'welcome1'
 			})
 		user = User.objects.get(username='abc')
 
 		self.assertEqual('abc', user.username)
+		self.assertEqual('abc@def.com', user.email)
 		self.assertNotEqual('welcome1', user.password)
+
 
 
 	@patch('accounts.views.messages')
@@ -68,6 +77,7 @@ class RegisterViewTest(TestCase):
 		User.objects.create(username="def", password="1234")
 		response = self.client.post('/accounts/register', data={
 			'username': 'def',
+			'email': 'abc@def.com',
 			'password': 'welcome1',
 			'password2': 'welcome1'
 			})
@@ -80,6 +90,7 @@ class RegisterViewTest(TestCase):
 	def test_calls_authenticate_with_uid_from_get_request(self, mock_auth):
 		response = self.client.post('/accounts/register', data={
 			'username': 'abc',
+			'email': 'abc@def.com',
 			'password': 'welcome1',
 			'password2': 'welcome1'
 			})
@@ -171,7 +182,37 @@ class LogoutTest( TestCase ):
 		self.assertTrue(mock_auth.logout.called)
 
 class ResetPasswordViewTest( TestCase ):
+
 	def test_uses_reset_password_page( self ):
-		response = self.client.post('/accounts/reset_password')
+		user_ = User.objects.create(username='abc', email=TEST_EMAIL)
+		user_.set_password('welcome1')
+		user_.save()
+		response = self.client.post('/accounts/reset_password', data={
+			'username': 'abc'
+		})
 		self.assertEqual(200, response.status_code)
-		self.assertTemplateUsed(response, 'accounts/reset_password.html')
+		self.assertTemplateUsed(response, 'accounts/reset_email_sent.html')
+
+class NewPasswordViewTest( TestCase ):
+
+	def test_new_password_uses_correct_template( self ):
+		user_ = User.objects.create(username = 'abc', email=TEST_EMAIL)
+		user_.set_password("welcome1")
+		user_.save()
+		token_ = Token.objects.create(username = 'abc', uid="123")
+		response = self.client.get('/accounts/new_password?token=123')	
+		self.assertTemplateUsed(response, 'accounts/new_password.html')
+
+	def test_session_cookie_container_username( self ):
+		user_ = User.objects.create(username = 'abc', email=TEST_EMAIL)
+		user_.set_password("welcome1")
+		user_.save()
+		token_ = Token.objects.create(username = 'abc', uid="123")
+
+		response = self.client.post('/accounts/new_password', data = {
+			'password': 'welcome1',
+			'password2': 'welcome1'
+		})	
+		session_key = Session.objects.all()[0].session_key
+		session = SessionStore(session_key=session_key)
+		self.assertEqual('abc', session['username'])

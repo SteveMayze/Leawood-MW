@@ -15,6 +15,7 @@ class RegistrationFormTest(TestCase):
 	def test_validation_fails_if_passwords_dont_match(self):
 		form = RegistrationForm(data={
 			'username': 'abc', 
+			'email': 'abc@def.com',
 			'password': 'welcome1', 
 			'password2': 'welcome2'
 		})
@@ -26,6 +27,7 @@ class RegistrationFormTest(TestCase):
 	def test_validation_passes_if_pwd_match(self):
 		form = RegistrationForm(data={
 			'username': 'abc', 
+			'email': 'abc@def.com',
 			'password': 'welcome1', 
 			'password2': 'welcome1'
 		})

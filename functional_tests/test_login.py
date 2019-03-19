@@ -62,11 +62,13 @@ class LoginTest(FunctionalTest):
 		self.assertIn('show', login_dialog.get_attribute('class'))
 
 		self.check_placeholder( 'id_registration_username', 'Enter your user ID')
+		self.check_placeholder( 'id_registration_email', 'your.email@address.com')
 		self.check_placeholder( 'id_registration_password', 'Enter your password')
 		self.check_placeholder( 'id_registration_password2', 'Confirm your password')
 
 		# Graeme enters his (minimal) registration
 		self.browser.find_element_by_id('id_registration_username').send_keys('graeme')
+		self.browser.find_element_by_id('id_registration_email').send_keys('graeme@leawood.com')
 		self.browser.find_element_by_id('id_registration_password').send_keys('welcome1')
 		self.browser.find_element_by_id('id_registration_password2').send_keys('welcome1')
 
@@ -89,6 +91,7 @@ class LoginTest(FunctionalTest):
 		login_dialog = self.browser.find_element_by_id('id_registerModal')
 		self.assertIn('show', login_dialog.get_attribute('class'))
 		self.browser.find_element_by_id('id_registration_username').send_keys('graeme')
+		self.browser.find_element_by_id('id_registration_email').send_keys('graeme@leawood.com')
 		self.browser.find_element_by_id('id_registration_password').send_keys('welcome1')
 		self.browser.find_element_by_id('id_registration_password2').send_keys('welcome1')
 		WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/form[2]/div/div/div/div[3]/button[2]"))).click()
@@ -149,7 +152,7 @@ class LoginTest(FunctionalTest):
 
 		# He is directed to a completely new page where he can enter
 		# his email address
-		self.wait_for(lambda: self.browser.find_element_by_id('id_email_address'))
+		self.wait_for(lambda: self.browser.find_element_by_id('id_username'))
 
 		# He enters his email address and clicks send.
 		# A secret token is generated and stored with the users 
