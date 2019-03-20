@@ -86,7 +86,10 @@ def reset_password( request ):
 		username = request.POST['username']
 		email = User.objects.get(username=username).email
 		uid = str(uuid.uuid4())
-		Token.objects.create(username=username, uid=uid)
+		token, created = Token.objects.get_or_create(username=username)
+		if ( not created ):
+			token.uid = uid
+			token.save()
 		url = request.build_absolute_uri(f'/accounts/new_password?uid={uid}')
 		send_mail(
 			'Leawood password reset',
@@ -98,9 +101,23 @@ def reset_password( request ):
 	return render(request, 'accounts/reset_password.html')
 
 def new_password( request ):
+	uid = ''
 	if request.method == 'GET':
 		uid = request.GET.get('token')
-		username = Token.objects.get(uid=uid)
+
 	if request.method == 'POST':
 		password = request.POST.get('password')
-	return render(request, 'accounts/new_password.html')	
+		uid = request.POST.get('token')
+
+		token = Token.objects.get(uid=uid )
+		user = auth.authenticate(username=token.username, password=password)
+		if user:
+			auth.login(request, user)
+			request.session['username'] = token.username
+			messages.success(
+				request,
+				"Password was successfully changed."
+			)
+		return redirect('/')
+
+	return render(request, 'accounts/new_password.html', {'token': uid})	

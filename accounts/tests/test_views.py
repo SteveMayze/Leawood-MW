@@ -193,6 +193,19 @@ class ResetPasswordViewTest( TestCase ):
 		self.assertEqual(200, response.status_code)
 		self.assertTemplateUsed(response, 'accounts/reset_email_sent.html')
 
+	def test_resending_reset_has_only_one_token( self ):
+		user_ = User.objects.create(username='abc', email=TEST_EMAIL)
+		user_.set_password('welcome1')
+		user_.save()
+		response = self.client.post('/accounts/reset_password', data={
+			'username': 'abc'
+		})
+		token1 = Token.objects.get(username='abc')
+		response = self.client.post('/accounts/reset_password', data={
+			'username': 'abc'
+		})
+		self.assertNotEqual(token1.uid, Token.objects.get(username='abc').uid)
+
 class NewPasswordViewTest( TestCase ):
 
 	def test_new_password_uses_correct_template( self ):
@@ -211,8 +224,10 @@ class NewPasswordViewTest( TestCase ):
 
 		response = self.client.post('/accounts/new_password', data = {
 			'password': 'welcome1',
-			'password2': 'welcome1'
+			'password2': 'welcome1',
+			'token': '123'
 		})	
+		self.assertEqual(302, response.status_code)
 		session_key = Session.objects.all()[0].session_key
 		session = SessionStore(session_key=session_key)
 		self.assertEqual('abc', session['username'])

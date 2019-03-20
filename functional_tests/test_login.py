@@ -154,7 +154,12 @@ class LoginTest(FunctionalTest):
 		# his email address
 		self.wait_for(lambda: self.browser.find_element_by_id('id_username'))
 
-		# He enters his email address and clicks send.
+		# He enters his username and clicks send.
+		username_input = self.browser.find_element_by_id('id_username')
+		username_input.send_keys('graeme')
+		reset_password_button = self.browser.find_element_by_id('id_reset_password')
+		reset_password_button.submit()
+		
 		# A secret token is generated and stored with the users 
 		# email address (lookup the username) and send it to them
 		# -  This needs to be linked to the user name so the registration 
@@ -168,7 +173,4 @@ class LoginTest(FunctionalTest):
 
 		# Once he sets a new password, he is automatically logged in and 
 		# directed back to the home page.
-
-
-
-		self.fail("Write the tests for retrieving the password!")
+		self.assertIn('Password was successfully changed.', self.browser.find_elements_by_class_name('messages')[0].text)
