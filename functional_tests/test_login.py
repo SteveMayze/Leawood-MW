@@ -1,16 +1,20 @@
+
 from .base import FunctionalTest
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from django.contrib.auth import get_user_model
+from django.core import mail
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import WebDriverException
-import time
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 from unittest import skip
+import re
+import time
 
-from django.contrib.auth import get_user_model
 User = get_user_model()
 
-
+TEST_EMAIL = "smayze@yahoo.com"
+SUBJECT = "Leawood password reset"
 class LoginTest(FunctionalTest):
 
 
@@ -68,7 +72,7 @@ class LoginTest(FunctionalTest):
 
 		# Graeme enters his (minimal) registration
 		self.browser.find_element_by_id('id_registration_username').send_keys('graeme')
-		self.browser.find_element_by_id('id_registration_email').send_keys('graeme@leawood.com')
+		self.browser.find_element_by_id('id_registration_email').send_keys(TEST_EMAIL)
 		self.browser.find_element_by_id('id_registration_password').send_keys('welcome1')
 		self.browser.find_element_by_id('id_registration_password2').send_keys('welcome1')
 
@@ -91,7 +95,7 @@ class LoginTest(FunctionalTest):
 		login_dialog = self.browser.find_element_by_id('id_registerModal')
 		self.assertIn('show', login_dialog.get_attribute('class'))
 		self.browser.find_element_by_id('id_registration_username').send_keys('graeme')
-		self.browser.find_element_by_id('id_registration_email').send_keys('graeme@leawood.com')
+		self.browser.find_element_by_id('id_registration_email').send_keys(TEST_EMAIL)
 		self.browser.find_element_by_id('id_registration_password').send_keys('welcome1')
 		self.browser.find_element_by_id('id_registration_password2').send_keys('welcome1')
 		WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/form[2]/div/div/div/div[3]/button[2]"))).click()
@@ -135,7 +139,7 @@ class LoginTest(FunctionalTest):
 
 
 	def test_user_can_reset_password( self ):
-		test_user = User.objects.create(username="graeme")
+		test_user = User.objects.create(username="graeme", email=TEST_EMAIL)
 		test_user.set_password("welcome1")
 		test_user.save()
 
@@ -157,7 +161,8 @@ class LoginTest(FunctionalTest):
 		# He enters his username and clicks send.
 		username_input = self.browser.find_element_by_id('id_username')
 		username_input.send_keys('graeme')
-		reset_password_button = self.browser.find_element_by_id('id_reset_password')
+		reset_password_button = self.browser.find_element_by_id('id_send_email')
+
 		reset_password_button.submit()
 		
 		# A secret token is generated and stored with the users 
@@ -165,12 +170,44 @@ class LoginTest(FunctionalTest):
 		# -  This needs to be linked to the user name so the registration 
 		#    will now require a valid email address
 
+		self.wait_for(lambda: self.assertIn(
+			'Check your email. You will find a message with a link to reset your password',
+			self.browser.find_element_by_tag_name('body').text
+		))
+
+		email = mail.outbox[0]
+		self.assertIn(TEST_EMAIL, email.to)
+		self.assertEqual(SUBJECT, email.subject)
 
 		# He has to check his email where there is a link containing that token
 
-		# When they click on the link, the token is checked and they will be 
+		self.assertIn('Use this link to reset your password', email.body)
+		url_search = re.search(r'http://.+/.+$', email.body)
+		if not url_search:
+			self.fail(f'Could not find the url in the email body:\n{email.body}')
+		url = url_search.group(0)
+		self.assertIn(self.live_server_url, url)
+
+		# When he clicks on the link, the token is checked and they will be 
 		# directed to another page where he can set a new password.
+		self.browser.get(url)
+		self.wait_for(lambda: self.browser.find_element_by_id('id_reset_password1'))
+
+		# Graene enters a new password twice
+		password1 = self.browser.find_element_by_id('id_reset_password1')
+		password1.send_keys("welcome1")
+		password2 = self.browser.find_element_by_id('id_reset_password2')
+		password2.send_keys("welcome1")
+
+		set_password_btn = self.browser.find_element_by_id('id_set_password')
+		set_password_btn.submit()
+
 
 		# Once he sets a new password, he is automatically logged in and 
 		# directed back to the home page.
+		self.wait_for_link('Sign off')
 		self.assertIn('Password was successfully changed.', self.browser.find_elements_by_class_name('messages')[0].text)
+
+
+# Verification that the token can expire.
+

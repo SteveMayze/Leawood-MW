@@ -8,6 +8,7 @@ import accounts.views
 from accounts.models import Token
 from unittest.mock import patch, call
 from unittest import skip
+from django.core.exceptions import ObjectDoesNotExist
 
 User = get_user_model()
 
@@ -183,20 +184,22 @@ class LogoutTest( TestCase ):
 
 class ResetPasswordViewTest( TestCase ):
 
-	def test_uses_reset_password_page( self ):
+	def setUp(self):
 		user_ = User.objects.create(username='abc', email=TEST_EMAIL)
 		user_.set_password('welcome1')
 		user_.save()
+
+
+	@patch('accounts.views.send_mail')
+	def test_uses_reset_password_page( self, mock_send_mail ):
 		response = self.client.post('/accounts/reset_password', data={
 			'username': 'abc'
 		})
 		self.assertEqual(200, response.status_code)
 		self.assertTemplateUsed(response, 'accounts/reset_email_sent.html')
 
-	def test_resending_reset_has_only_one_token( self ):
-		user_ = User.objects.create(username='abc', email=TEST_EMAIL)
-		user_.set_password('welcome1')
-		user_.save()
+	@patch('accounts.views.send_mail')
+	def test_resending_reset_has_only_one_token( self, mock_send_mail ):
 		response = self.client.post('/accounts/reset_password', data={
 			'username': 'abc'
 		})
@@ -205,6 +208,30 @@ class ResetPasswordViewTest( TestCase ):
 			'username': 'abc'
 		})
 		self.assertNotEqual(token1.uid, Token.objects.get(username='abc').uid)
+
+
+	@patch('accounts.views.send_mail')
+	def test_sends_mail_to_address_from_post(self, mock_send_mail):
+		self.client.post('/accounts/reset_password', data={
+			'username': 'abc'
+		})
+
+		self.assertEqual(mock_send_mail.called, True)
+		(subject, body, from_email, to_list), kwargs = mock_send_mail.call_args
+		self.assertEqual(subject, 'Leawood password reset')
+		self.assertEqual(from_email, 'noreply@leawood.com.au')
+		self.assertEqual(to_list, [TEST_EMAIL])
+
+	@patch('accounts.views.send_mail')
+	def test_sends_link_to_login_using_token_uid(self, mock_send_mail):
+		self.client.post('/accounts/reset_password', data={
+			'username': 'abc'
+		})
+		token = Token.objects.get(username='abc')
+		expected_url = f'http://testserver/accounts/new_password?uid={token.uid}'
+		(subject, body, from_email, to_list), kwargs = mock_send_mail.call_args
+		self.assertIn(expected_url, body)			
+
 
 class NewPasswordViewTest( TestCase ):
 
@@ -231,3 +258,21 @@ class NewPasswordViewTest( TestCase ):
 		session_key = Session.objects.all()[0].session_key
 		session = SessionStore(session_key=session_key)
 		self.assertEqual('abc', session['username'])
+
+
+	def test_token_is_removed( self ):
+		user_ = User.objects.create(username = 'abc', email=TEST_EMAIL)
+		user_.set_password("welcome1")
+		user_.save()
+		token_ = Token.objects.create(username = 'abc', uid="123")
+		response = self.client.post('/accounts/new_password', data = {
+			'password': 'welcome1',
+			'password2': 'welcome1',
+			'token': '123'
+		})
+		with self.assertRaises(ObjectDoesNotExist):
+			Token.objects.get(uid="123")
+
+
+
+

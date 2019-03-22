@@ -1,11 +1,11 @@
-from django.contrib import auth, messages
-from django.contrib.auth import get_user_model
-from django.shortcuts import redirect
-from django.shortcuts import render
 from accounts.forms import RegistrationForm, LoginForm
 from accounts.models import Token
-import uuid
+from django.contrib import auth, messages
+from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
+from django.shortcuts import redirect
+from django.shortcuts import render
+import uuid
 
 
 User = get_user_model()
@@ -87,15 +87,14 @@ def reset_password( request ):
 		email = User.objects.get(username=username).email
 		uid = str(uuid.uuid4())
 		token, created = Token.objects.get_or_create(username=username)
-		if ( not created ):
-			token.uid = uid
-			token.save()
+		token.uid = uid
+		token.save()
 		url = request.build_absolute_uri(f'/accounts/new_password?uid={uid}')
 		send_mail(
 			'Leawood password reset',
 			f'Use this link to reset your password:\n\n{url}',
 			'noreply@leawood.com.au',
-			[email],
+			[ email ],
 			)
 		return render(request, 'accounts/reset_email_sent.html')
 	return render(request, 'accounts/reset_password.html')
@@ -103,13 +102,14 @@ def reset_password( request ):
 def new_password( request ):
 	uid = ''
 	if request.method == 'GET':
-		uid = request.GET.get('token')
+		uid = request.GET.get('uid')
 
 	if request.method == 'POST':
 		password = request.POST.get('password')
 		uid = request.POST.get('token')
-
 		token = Token.objects.get(uid=uid )
+		user = User.objects.get(username=token.username)
+		user.set_password(password)
 		user = auth.authenticate(username=token.username, password=password)
 		if user:
 			auth.login(request, user)
@@ -118,6 +118,11 @@ def new_password( request ):
 				request,
 				"Password was successfully changed."
 			)
+		else:
+			messages.error(
+				request,
+				"Password was not reset correctly."
+			)
+		token.delete()			
 		return redirect('/')
-
 	return render(request, 'accounts/new_password.html', {'token': uid})	
