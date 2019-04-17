@@ -1,5 +1,5 @@
 
-from .base import FunctionalTest
+from .base import FunctionalTest, TEST_EMAIL
 from django.contrib.auth import get_user_model
 from django.core import mail
 from selenium.common.exceptions import WebDriverException
@@ -13,7 +13,6 @@ import time
 
 User = get_user_model()
 
-TEST_EMAIL = "smayze@yahoo.com"
 SUBJECT = "Leawood password reset"
 class LoginTest(FunctionalTest):
 
@@ -113,9 +112,7 @@ class LoginTest(FunctionalTest):
 	def test_can_sign_in(self):
 		# First, he has to sign in. He clicks on the sign in link and
 		# a Modal dialog appears asking for his credentials.
-		test_user = User.objects.create(username="graeme")
-		test_user.set_password("welcome1")
-		test_user.save()
+		test_user = self.create_user('graeme', 'welcome1', TEST_EMAIL)
 
 		self.browser.get(self.live_server_url)
 
@@ -139,9 +136,7 @@ class LoginTest(FunctionalTest):
 
 
 	def test_user_can_reset_password( self ):
-		test_user = User.objects.create(username="graeme", email=TEST_EMAIL)
-		test_user.set_password("welcome1")
-		test_user.save()
+		test_user = self.create_user('graeme', 'welcome1', TEST_EMAIL)
 
 		self.browser.get(self.live_server_url)
 		# Graeme attempts to sign in after a long while and realises he

@@ -1,4 +1,5 @@
 from django.test import LiveServerTestCase
+from django.contrib.auth import get_user_model
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -8,7 +9,9 @@ from selenium.common.exceptions import WebDriverException
 import unittest
 import time
 
+User = get_user_model()
 
+TEST_EMAIL = "smayze@yahoo.com"
 
 MAX_WAIT = 10
 
@@ -56,4 +59,11 @@ class FunctionalTest(LiveServerTestCase):
 	def check_placeholder(self, element_id, value):
 		element = self.browser.find_element_by_id(element_id)
 		self.assertEqual(element.get_attribute('placeholder'), value)
+
+	def create_user(self, username, password, email):
+		test_user = User.objects.create(username=username, email=email)
+		test_user.set_password(password)
+		test_user.save()
+		return test_user
+
 
