@@ -58,6 +58,24 @@ class LogEntryTest( TestCase ):
 		log_entry.save()
 		self.assertIn(log_entry, device_.log_entry_set.all())
 
+	def test_can_read_the_log_data( self ):
+		device_ = Device.objects.create(
+				name="device_a", 
+				description="device description",
+				serial_id = "abc",
+				address = "abc"			
+			)
+		log_entry = Log_Entry(
+				log_data = { 
+					"field1": 45.6,
+					"field2": 34.4,
+				}
+			)
+		log_entry.device = device_
+		log_entry.save()
+		self.assertEquals("{'field1': 45.6, 'field2': 34.4}", Log_Entry.objects.all()[0].log_data)
+
+
 
 ## ========== Tables to be yet defined ... Don't clutter the tests =========
 # class UnitsTest( TestCase ):
