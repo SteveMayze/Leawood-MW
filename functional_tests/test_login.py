@@ -43,7 +43,8 @@ class LoginTest(FunctionalTest):
 		self.check_placeholder( 'id_login_password', 'Enter your password')
 
 		# He does not know any credentials, so he cancels the dialog.
-		WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/form[1]/div/div/div/div[3]/button[1]"))).click()
+		WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="id_loginModal"]/div/div/div[3]/button[1]'))).click()
+
 		# This is a strange work around to dismiss a modal dialog
 		# cancel_button = self.browser.find_element_by_xpath("/html/body/form/div/div/div/div[3]/button[1]")
 		# cancel_button.click()
@@ -75,7 +76,7 @@ class LoginTest(FunctionalTest):
 		self.browser.find_element_by_id('id_registration_password').send_keys('welcome1')
 		self.browser.find_element_by_id('id_registration_password2').send_keys('welcome1')
 
-		WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/form[2]/div/div/div/div[3]/button[2]"))).click()
+		WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="id_registerModal"]/div/div/div[3]/button[2]'))).click()
 		# -- The strange work around from above is not needed here.
 		# Graeme sees that the registration and sign on have gone and are replaced with
 		# The link to sign on.
@@ -97,8 +98,7 @@ class LoginTest(FunctionalTest):
 		self.browser.find_element_by_id('id_registration_email').send_keys(TEST_EMAIL)
 		self.browser.find_element_by_id('id_registration_password').send_keys('welcome1')
 		self.browser.find_element_by_id('id_registration_password2').send_keys('welcome1')
-		WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/form[2]/div/div/div/div[3]/button[2]"))).click()
-
+		WebDriverWait(self.browser, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="id_registerModal"]/div/div/div[3]/button[2]'))).click()
 		# Graeme see that he is not signed in and there is a warning that the name
 		# is already taken.
 		# --- This could be JavaScript i.e. Ajax to verify the user name

@@ -23,10 +23,3 @@ class DashboardViewTest(TestCase):
 		self.assertTemplateUsed(response, 'dashboard/dashboard.html')
 
 
-class DevicesViewTest( TestCase ):
-	def test_devices_resolves_to_devices_view(self):
-		found = resolve('/devices/')
-		self.assertEqual(found.func, dashboard)
-
-	def test_devices_returns_correct_template(self):
-		pass

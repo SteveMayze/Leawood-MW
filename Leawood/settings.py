@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'dashboard',
+    'devices',
 ]
 
 EMAIL_HOST = 'smtp.gmail.com'
