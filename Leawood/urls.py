@@ -17,13 +17,13 @@ Including another URLconf
 # from django.urls import path
 from django.conf.urls import include, url
 from dashboard import views as home
-from devices import views as devices
+from devices import urls as devices_urls
 from accounts import urls as accounts_urls
 
 urlpatterns = [
 	url(r'^$', home.dashboard, name='dashboard'),
     url(r'^leawood/$', home.dashboard, name='dashboard'),
-    url(r'^devices/$', devices.devices, name='devices'),
+    url(r'^devices/', include(devices_urls)),
     url(r'^accounts/', include(accounts_urls)),
     # path('admin/', admin.site.urls),
 ]

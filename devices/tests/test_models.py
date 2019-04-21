@@ -25,6 +25,8 @@ class DevicesModelTest( TestCase ):
 		self.assertFalse( device.registered )
 
 	def test_device_is_related_to_location( self ):
+		## 38°09'56.7"S+146°41'56.0"E
+		# West and South are negative. North and East are positive
 		location_ = Location.objects.create(
 			name="Field A", 
 			longitude=-38.1665936, 
@@ -95,6 +97,7 @@ class LogEntryTest( TestCase ):
 		log_entry.save()
 
 		self.assertEquals(json_data, Log_Entry.objects.all()[0].log_data)
+
 
 	def test_can_read_data_json_value( self ):
 		device_ = Device.objects.create(
