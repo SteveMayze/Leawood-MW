@@ -1,4 +1,5 @@
 from django.db import models
+import json
 
 
 class Location ( models.Model ):
@@ -18,5 +19,13 @@ class Device ( models.Model ):
 
 class Log_Entry( models.Model ):
 	time_stamp = models.DateTimeField(auto_now_add=True)
-	log_data = models.TextField(blank=True)
 	device = models.ForeignKey(Device, on_delete=models.CASCADE)
+	_log_data = models.TextField(blank=True)
+
+	@property
+	def log_data(self):
+		return json.loads(self._log_data)
+
+	@log_data.setter
+	def log_data(self, value):
+		self._log_data = json.dumps(value)	

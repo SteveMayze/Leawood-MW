@@ -1,6 +1,7 @@
 from django.test import TestCase
 from devices.models import Device, Location, Log_Entry
 from django.core.exceptions import ValidationError
+import json
 
 # The Devices application will also track the data to be recorded 
 # the units of measure and also the deployed location of the device.
@@ -65,15 +66,54 @@ class LogEntryTest( TestCase ):
 				serial_id = "abc",
 				address = "abc"			
 			)
-		log_entry = Log_Entry(
-				log_data = { 
+		json_data = { 
 					"field1": 45.6,
 					"field2": 34.4,
 				}
+		log_entry = Log_Entry(
+				log_data = json_data
 			)
 		log_entry.device = device_
 		log_entry.save()
-		self.assertEquals("{'field1': 45.6, 'field2': 34.4}", Log_Entry.objects.all()[0].log_data)
+		self.assertEquals(json_data, Log_Entry.objects.all()[0].log_data)
+
+	def test_can_read_data_as_json( self ):
+		device_ = Device.objects.create(
+				name="device_a", 
+				description="device description",
+				serial_id = "abc",
+				address = "abc"			
+			)
+		json_data = { 
+					"field1": 45.6,
+					"field2": 34.4,
+				}
+		log_entry = Log_Entry(
+				log_data = json_data
+			)
+		log_entry.device = device_
+		log_entry.save()
+
+		self.assertEquals(json_data, Log_Entry.objects.all()[0].log_data)
+
+	def test_can_read_data_json_value( self ):
+		device_ = Device.objects.create(
+				name="device_a", 
+				description="device description",
+				serial_id = "abc",
+				address = "abc"			
+			)
+		json_data = { 
+					"field1": 45.6,
+					"field2": 34.4,
+				}
+		log_entry = Log_Entry(
+				log_data = json_data
+			)
+		log_entry.device = device_
+		log_entry.save()
+
+		self.assertEquals(json_data["field1"], Log_Entry.objects.all()[0].log_data["field1"])
 
 
 
