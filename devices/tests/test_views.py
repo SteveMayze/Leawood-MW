@@ -5,6 +5,28 @@ from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.shortcuts import render
 from devices.models import Device
+from lorem.text import TextLorem
+import string
+import random
+from unittest.mock import patch, Mock
+import unittest
+
+def create_random_data( count ):
+	name_generator = TextLorem(srange=(2,4))
+	description_generator = TextLorem(srange=(4,8))
+	registered = True
+	for i in range( count ):
+		device = Device.objects.create(
+			name = f'{name_generator.sentence()}_{count}', 
+			serial_id=''.join(random.choices(string.ascii_uppercase + string.digits, k=10)),
+			description=description_generator.sentence(), 
+			address=''.join(random.choices(string.ascii_uppercase + string.digits, k=10)),
+			registered=registered
+			)
+		if registered:
+			registered = False
+		else:
+			registered = True
 
 def create_sample_data():
 	device = Device.objects.create(
@@ -70,11 +92,17 @@ class ActiveDevicesViewTest( TestCase ):
 		self.assertContains(response, 'active item 2')
 		self.assertContains(response, 'active item 2')
 
+	def test_pagination( self ):
+		create_random_data(20)
+		context_dict = self.context
+		response = self.client.get('/devices/')
+		self.assertContains(response, "1 of 2")
 
 
 # Although this is a tab, for the purpose of testing, this will 
 # try to be treaded as a view.
 class PendingDevicesViewTest( TestCase ):
+
 	def setUp(self):
 		self.request = HttpRequest()
 		self.context = {}
@@ -96,5 +124,6 @@ class PendingDevicesViewTest( TestCase ):
 		self.assertContains(response, 'pending item 2')
 		self.assertNotContains(response, 'active item 2')
 		self.assertNotContains(response, 'active item 2')
+
 
 

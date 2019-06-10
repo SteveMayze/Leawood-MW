@@ -1,8 +1,6 @@
-	<!-- DEVICES MANAGEMENT PAGE -->
-	<!-- DEVICES LIST -->
-		{% block search_panel %}
-			{% include "searchpanel.html" %}
-		{% endblock %}
+{% block search_panel %}
+	{% include "searchpanel.html" %}
+{% endblock %}
 <h1>Active</h1>
 <div class="row">
 	<div class="col-md-10 offset-md-1" id="id_active_list">
@@ -15,3 +13,9 @@
 		{% endfor %}
 	</div>
 </div>
+
+{% with query_objects=active_objects %}
+	{% block pagination %}
+		{% include "pagination.html" %}
+	{% endblock %}
+{% endwith %}

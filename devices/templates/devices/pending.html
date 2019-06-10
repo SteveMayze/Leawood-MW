@@ -1,7 +1,6 @@
-
-		{% block search_panel %}
-			{% include "searchpanel.html" %}
-		{% endblock %}
+{% block search_panel %}
+	{% include "searchpanel.html" %}
+{% endblock %}
 
 <h1>Pending</h1>
 <div class="row">
@@ -15,3 +14,9 @@
 		{% endfor %}
 	</div>
 </div>
+
+{% with query_objects=pending_objects  %}
+	{% block pagination %}
+		{% include "pagination.html" %}
+	{% endblock %}
+{% endwith %}
