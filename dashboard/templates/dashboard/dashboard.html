@@ -6,17 +6,17 @@
 {% block header_text %}Dashboard{% endblock %}
 
 {% block page_content %}
-	<div class="row">
-		<div class="col-md-10 offset-md-1">
-			<input type="text" id="id_search_filter" placeholder="device filter" />
-		</div>
+	<div class="col-md-10 offset-md-1">
+		{% block searchpanel %}
+			{% include "searchpanel.html" %}
+		{% endblock %}
 	</div>
-
 	<div class="row">
 		<div class="col-md-10 offset-md-1 text-left">
 			<h2>Devices</h2>
 		</div>
 	</div>
+
 	<div class="row">
 		<div class="col-md-10 offset-md-1">
 			<table id="id_device_table">

@@ -1,0 +1,17 @@
+
+		{% block search_panel %}
+			{% include "searchpanel.html" %}
+		{% endblock %}
+
+<h1>Pending</h1>
+<div class="row">
+	<div class="col-md-10 offset-md-1" id="id_pending_list">
+		{% for obj in pending_objects %}
+				<h3><input class="col-md-1" type="checkbox" name="device: {{obj.id}}"></input>
+				<a href="{{ obj.get_absolute_url }}">{{ obj.name }}</a>
+				<small>{{ obj.address }}</small></h3>
+			<div class="col-md-10 offset-md-1 ">{{ obj.description }}</div>
+		{% cycle "</div></div><hr/><div class='row'><div class='col-md-10 offset-md-1 bg-light'>" "</div></div><hr/><div class='row'><div class='col-md-10 offset-md-1 '>" %}
+		{% endfor %}
+	</div>
+</div>

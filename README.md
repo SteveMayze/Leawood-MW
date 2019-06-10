@@ -15,6 +15,10 @@ cd leawood-MW
 
 virtualenv -p python3.6 virtualenv
 . ./virtualenv/bin/activate
+
+For Windows, use
+. ./virtualenv/Scripts/activate
+
 pip install django selenium
 
 python manage.py collectstatic

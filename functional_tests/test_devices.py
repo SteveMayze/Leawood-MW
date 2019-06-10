@@ -10,6 +10,13 @@ class DevicesTest(FunctionalTest):
 		# Graeme signs on and sees that the menu has expanded to be able 
 		# to manage the devices
 		test_user = self.create_user('graeme', 'welcome1', TEST_EMAIL)
+		# session_key = create_pre_authenticated_session('graeme')
+		# self.browser.get(self.live_server_url + "/404_no_such_url")
+		# self.browser.add_cookie(dict(
+		# 	name=settings.SESSION_COOKIE_NAME,
+		# 	value=session_key,
+		# 	path='/'
+		# ))		
 
 		self.browser.get(self.live_server_url)
 
@@ -25,6 +32,7 @@ class DevicesTest(FunctionalTest):
 		password = self.browser.find_element_by_id('id_login_password')
 		password.send_keys('welcome1')
 		password.send_keys(Keys.ENTER)
+
 		self.wait_for_link('Sign off')
 		self.assertIn('Login was successful.', self.browser.find_elements_by_class_name('messages')[0].text)
 
@@ -35,21 +43,32 @@ class DevicesTest(FunctionalTest):
 
 		# Initially, there are no devices registered. They have to be paired. 
 		# So there should be just an empty list
-		self.wait_for(lambda: self.browser.find_element_by_id('id_device_list') )
+		self.wait_for(lambda: self.browser.find_element_by_id('id_active_list') )
 
-		# Graeme sees the link to pair and register a device and clicks it.
-		self.browser.find_element_by_link_text('Pair device').click()
+		# The page has a an empty list of devices. There are two tabs. One for 
+		# Devices (the default) and one for Pending devices and registration of new ones. 
+		# The Devices tab is empty. There is only a search form and an empty list.
 
-		# He is taken to a page to iniate the scan for finding any device.
-		self.wait_for(lambda: self.assertIn('Devices - pairing', self.browser.title) )
+		self.browser.find_element_by_link_text('Active')
+		searchbox = self.browser.find_element_by_id('id_search_filter')
+		self.assertEqual(searchbox.get_attribute('placeholder'), 'device filter')
 
-		header_text = self.browser.find_element_by_tag_name('h1').text
-		self.assertIn('Devices - pairing', header_text)
+		# Since this page is empty, Graeme clicks on the "Pending" tab to see what is there.
 
-		# The page has a link to initial the scan. Once the scan is initiated,
-		# the page counts down from 60
-		# As the page counts down, it will be updated with the devices that are
-		# found. 
+		self.browser.find_element_by_link_text('Pending').click()
+		# On the Pending page, there is also a list and also empty - with a search bar. 
+		# There are two buttones. One to register a device manually and another to scan for 
+		# any new devices in the area.
+		searchbox = self.browser.find_element_by_id('id_search_filter')
+		self.assertEqual(searchbox.get_attribute('placeholder'), 'device filter')
+
+
+
+		# SCANNING FOR A DEVICE
+		# =====================
+
+		# Once the scan is initiated, the page counts down from 60 As the page counts 
+		# down, it will be updated with the devices that are found. 
 		# In essence, the scan will broadcast a message to invite any device, not
 		# yet paired to introduce them selves.
 		# These are then populated to a able on the "paring page"
