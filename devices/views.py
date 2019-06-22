@@ -8,11 +8,14 @@ def devices( request ):
 
 	context_dict = {}
 	query = request.GET.get("q")
-	page_request_var = "page"
+	current_tab = request.GET.get("t")
+	if current_tab == None:
+		current_tab = 'active'
+	page_request_var = "p"
 
 
 	queryset_list = Device.objects.filter(registered = True ).order_by('id')
-	if query and current_tab == "list":
+	if query and current_tab == "active":
 		queryset_list = queryset_list.filter(
 				Q(name__icontains=query) | 
 				Q(description__icontains=query)
@@ -46,12 +49,12 @@ def devices( request ):
 	# context_dict["pagetitle"] = "Leawood"
 	context_dict["pagename"] = "Devices"
 	# context_dict["titlebar"] = "Leawood - Devices"
-	# context_dict["page_request_var"] = page_request_var
-	# context_dict["tab_request_var"] = tab_request_var
+	context_dict["page_request_var"] = page_request_var
+	#context_dict["tab_request_var"] = tab_request_var
 	context_dict["pending_objects"] = pending_qs
 	context_dict["active_objects"] = active_qs
 
-	context_dict["current_tab"] = 'active'
+	context_dict["current_tab"] = current_tab
 	response = render(request, 'devices/devices.html', context=context_dict)
 	return response
 
