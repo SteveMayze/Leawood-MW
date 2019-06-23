@@ -1,11 +1,13 @@
+
+
 <div class="row">
     <ul class="pagination col-md-11 offset-md-1" >
         {% if query_objects.has_previous %}
 			<li class="page-item">
-				<a class="page-link" href="?t={{current_tab}}&{{ page_request_var }}=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&laquo; first</a>
+				<a class="page-link" href="?{{ page_number_var }}=1{% if request.GET.q %}&{{page_filter_var}}={{ request.GET.q }}{% endif %}{% if request.GET.t %}&{{page_tab_var}}={{ request.GET.t }}{% else %}&{{page_tab_var}}={{current_tab}}}{% endif %}">&laquo; first</a>
             </li>
 			<li class="page-item">
-            <a class="page-link" href="?t={{current_tab}}&{{ page_request_var }}={{ query_objects.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&lt; previous</a>
+            <a class="page-link" href="?{{ page_number_var }}={{ query_objects.previous_page_number }}{% if request.GET.q %}&page_filter_var={{ request.GET.q }}{% endif %}{% if request.GET.t %}&{{page_tab_var}}={{ request.GET.t }}{% else %}&{{page_tab_var}}={{current_tab}}}{% endif %}">&lt; previous</a>
             </li>
         {% else %}
 			<li class="page-item disabled">
@@ -24,10 +26,10 @@
 
         {% if query_objects.has_next %}
 			<li class="page-item">
-				<a class="page-link" href="?t={{current_tab}}&{{ page_request_var }}={{ query_objects.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next &gt;</a>
+				<a class="page-link" href="?{{ page_number_var }}={{ query_objects.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.t %}&{{page_tab_var}}={{ request.GET.t }}{% else %}&{{page_tab_var}}={{current_tab}}}{% endif %}">next &gt;</a>
             </li>
 			<li class="page-item">
-				<a class="page-link" href="?t={{current_tab}}&{{ page_request_var }}={{ query_objects.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">last &raquo;</a>
+				<a class="page-link" href="?{{ page_number_var }}={{ query_objects.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.t %}&{{page_tab_var}}={{ request.GET.t }}{% else %}&{{page_tab_var}}={{current_tab}}}{% endif %}">last &raquo;</a>
             </li>
         {% else %}
 			<li class="page-item disabled">
@@ -39,3 +41,8 @@
         {% endif %}
     </ul> 
 </div>	
+
+<!-- 
+    TODO - Add some Java script that will change the respective URLs
+            based on the context of the selected tab 
+-->
